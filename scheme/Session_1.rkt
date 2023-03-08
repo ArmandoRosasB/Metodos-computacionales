@@ -1,0 +1,122 @@
+#lang racket
+
+;; Esto es un comentario
+;; Author: Armando Rosas
+;; Session 1
+
+(define a 5)  ;; f(x) = 5
+
+(define fn1
+    (lambda (x) ;; Funcion suma
+        (+ x 5)))
+
+(define fn2
+    (lambda(x y)
+    (+ x y)))
+
+(define fn3 ;; Funcion que genera funciones
+    (lambda (x)
+        (lambda(y)
+        (+ x y))))
+
+;; sum-of-squares: number number => number
+(define sum-of-square
+    (lambda (x y)
+        (+ (* x x) (* y y))))
+
+
+;; Area of disk: number => number
+(define area-of-disk
+    (lambda (radius)
+        (* 3.1415 radius radius)))
+
+
+;; Area of ring: number number => number
+(define area-of-ring
+    (lambda (outer inner)
+        (- (area-of-disk outer)
+        (area-of-disk inner))))
+
+;; wage: number number => number
+(define wage
+    (lambda (payment hours)
+        (* payment hours)))
+
+;; tax: number number => number
+(define tax
+    (lambda (wage rate)
+        (* wage rate)))
+;; (tax 100 0.15) -> 15
+
+;; 
+(define netpay
+    (lambda (payment hours rate)
+        (- (wage payment hours)
+        (tax (wage payment hours) rate))))
+
+;; (netpay 12 40 0.15) -> 408
+
+;; maximum: number number => number
+(define maximum
+    (lambda (a b)
+        (cond   ;;Condicion
+            [(> a b) a] ;;pregunta parametros
+            [else b])))  ;;else
+
+
+;; The interest for <$500 is $20
+;; The interest for <$2000 is $90
+;; The interest for <10, 000 is $500
+
+(define interest
+    (lambda (amount)
+    (cond
+        [(< amount 500) 20]
+        [(< amount 2000) 90]
+        [(< amount 10000) 500])))
+
+;; and, not or
+
+;; fact: number => number
+(define fact
+    (lambda (n)
+        (cond
+            [(= 1 n) 1]
+            [else (* n (fact (- n 1)))])))
+
+(define fact-head
+    (lambda (n acc)
+        (cond
+            [(= n 1) acc]
+            [else (fact-head (- n 1) (* acc n))])))
+
+(define fact2
+    (lambda(n)
+        (fact-head n 1)))
+
+;; fibo: number -> number
+(define fibo
+    (lambda (n)
+    (cond
+        [(= n 1) 1]
+        [(= n 2) 1]
+        [else (+ (fibo (- n 1))
+                (fibo (- n 2)))])))
+;; (fibo 7) => 13
+
+
+;; Sumatoria start a end
+
+(define sumatoria
+    (lambda (s e)
+    (cond
+        [(= s e) s]
+        [else (+ e (sumatoria s (- e 1)))])))
+
+(define gcd
+    (lambda (a b)
+        (cond
+            [(= b 0) a]
+            [else (gcd b (remainder a b))])))
+
+;;
