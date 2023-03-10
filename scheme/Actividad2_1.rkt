@@ -389,3 +389,61 @@
 ;;⇒ 32
 (dot-product-tail '(1.3 3.4 5.7 9.5 10.4) '(-4.5 3.0 1.5 0.9 0.0) 0)
 ;;⇒ 21.45
+
+
+;; sum-tail lst -> num
+(define sum-tail
+    (lambda (lst acc) ;; acc empieza siendo 0
+    (cond
+    [(empty? lst) acc]
+    [else (sum-tail (cdr lst) (+ acc (car lst)))])))
+
+;; count-elem-tail lst -> num
+(define count-elem-tail
+    (lambda (lst acc) ;; acc empieza siendo 0
+    (cond
+    [(empty? lst) acc]
+    [else (count-elem-tail (cdr lst) (+ 1 acc))])))
+
+;; average lon => num 
+(define average
+    (lambda (lst)
+    (cond
+    [(empty? lst) 0]
+    [else (/ (sum lst) (count-elem lst))])))
+
+(average '())
+;;⇒ 0
+(average '(4))
+;;⇒ 4
+(average '(5 6 1 6 0 1 2))
+;;⇒ 3
+(average '(1.7 4.5 0 2.0 3.4 5 2.5 2.2 1.2))
+;;⇒ 2.5
+
+
+;; aux-deviation-tail lon => num
+(define aux-deviation-tail
+    (lambda (lst avg acc) ;; acc comienza siendo una lista vacia
+    (cond
+    [(empty? lst) acc]
+    [else (aux-deviation-tail (cdr lst) avg (append acc (cons (expt (- (car lst) avg) 2) '())))])))
+    
+;;(aux-deviation-tail '(1 2 3) 2 '())
+;;=> '(1 0 1)
+
+;; standard-deviation lon => num
+;;(define standard-deviation
+;;    (lambda (lst)
+;;    (cond
+;;    [(empty? lst) 0]
+;;    [else (expt (/ (sum-tail (aux-deviation-tail lst ((average lst)) '()) 0) (count-elem-tail lst 0)) (/ 1 2))])))
+
+;;(standard-deviation '())
+;;⇒ 0
+;;(standard-deviation '(4 8 15 16 23 42))
+;;⇒ 12.3153
+;;(standard-deviation '(110 105 90 100 95))
+;;⇒ 7.07106
+;;(standard-deviation '(9 2 5 4 12 7 8 11 9 3 7 4 12 5 4 10 9 6 9 4))
+;;⇒ 2.983
