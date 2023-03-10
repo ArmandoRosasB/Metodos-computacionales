@@ -4,13 +4,14 @@
 
 using namespace std;
 
+
 int sumatoria(int, int);
-int fact_head(int, int);
+int fact_tail(int, long long);
 int fib(int);
 
 int main(int argc, char* argv[]){
 
-    cout<< fib(42) << endl;
+    cout<< fact_tail(10, 1)<< endl;
 
     system("pause");
     return 0;
@@ -25,14 +26,13 @@ int sumatoria(int start, int end){
     }
 }
 
-int fact_head(int n, int acum){
-    cout<< acum << " ";
+int fact_tail(int n, long long acum){
     if (n == 1){
         return acum;
     }
     
     else{
-        return fact_head(n - 1, acum * n);
+        return fact_tail(n - 1, acum * n);
     }
        
 }

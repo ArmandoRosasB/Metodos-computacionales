@@ -410,7 +410,7 @@
     (lambda (lst)
     (cond
     [(empty? lst) 0]
-    [else (/ (sum lst) (count-elem lst))])))
+    [else (/ (sum-tail lst 0) (count-elem-tail lst 0))])))
 
 (average '())
 ;;⇒ 0
@@ -432,18 +432,73 @@
 ;;(aux-deviation-tail '(1 2 3) 2 '())
 ;;=> '(1 0 1)
 
-;; standard-deviation lon => num
-;;(define standard-deviation
-;;    (lambda (lst)
-;;    (cond
-;;    [(empty? lst) 0]
-;;    [else (expt (/ (sum-tail (aux-deviation-tail lst ((average lst)) '()) 0) (count-elem-tail lst 0)) (/ 1 2))])))
+;;standard-deviation lon => num
+(define standard-deviation
+    (lambda (lst)
+    (cond
+    [(empty? lst) 0]
+    [else (expt (/ (sum-tail (aux-deviation-tail lst (average lst) '()) 0) (count-elem-tail lst 0)) (/ 1 2))])))
 
-;;(standard-deviation '())
+(standard-deviation '())
 ;;⇒ 0
-;;(standard-deviation '(4 8 15 16 23 42))
+(standard-deviation '(4 8 15 16 23 42))
 ;;⇒ 12.3153
-;;(standard-deviation '(110 105 90 100 95))
+(standard-deviation '(110 105 90 100 95))
 ;;⇒ 7.07106
-;;(standard-deviation '(9 2 5 4 12 7 8 11 9 3 7 4 12 5 4 10 9 6 9 4))
+(standard-deviation '(9 2 5 4 12 7 8 11 9 3 7 4 12 5 4 10 9 6 9 4))
 ;;⇒ 2.983
+
+
+;; replic lst -> lst
+(define replic-aux
+    (lambda (n elem)
+    (cond
+    [(= n 0) '()]
+    [else (append (cons elem '()) (replic-aux (- n 1) elem))])))
+
+(define replic
+    (lambda (n lst)
+    (cond
+    [(empty? lst) '()]
+    [else (append (replic-aux n (car lst)) (replic n (cdr lst)))])))
+
+(replic 7 '())
+;;⇒ ()
+(replic 0 '(a b c))
+;;⇒ ()
+(replic 3 '(a))
+;;⇒ (a a a)
+(replic 4 '(1 2 3 4))
+;;⇒ '(1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4)
+
+
+;; expand lst num -> lst
+(define expand
+    (lambda (lst n) ;; n comienza siendo 1
+    (cond
+    [(empty? lst) '()]
+    [else (append (replic n (cons (car lst) '())) (expand (cdr lst) (+ n 1)))])))
+
+(expand '() 1)
+;;⇒ ()
+(expand '(a) 1)
+;⇒ (a)
+(expand '(1 2 3 4) 1)
+;;⇒ (1 2 2 3 3 3 4 4 4 4)
+(expand '(a b c d e) 1)
+;;⇒ (a b b c c c d d d d e e e e e)
+
+;; binary num -> lon
+(define binary
+    (lambda (num) 
+    (cond
+    [(= num 0) '()]
+    [else (append (binary (truncate (/ num 2))) (cons (remainder num 2) '()))])))
+
+(binary 0)
+;;⇒ ()
+(binary 30)
+;;⇒ (1 1 1 1 0)
+(binary 45123)
+;;⇒ (1 0 1 1 0 0 0 0 0 1 0 0 0 0 1 1)
+
