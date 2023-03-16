@@ -140,3 +140,173 @@
 ;; ⇒ (((6 5) 4) 3 (2 1))
 (deep-reverse '(a (b (c (d (e (f (g (h i j)))))))))
 ;; ⇒ ((((((((j i h) g) f) e) d) c) b) a)
+
+
+;; insert-anywhere obj lst -> lst
+
+
+(insert-everywhere 1 '())
+;; ⇒ ((1))
+(insert-everywhere 1 '(a))
+;; ⇒ ((1 a) (a 1))
+(insert-everywhere 1 '(a b c))
+;; ⇒ ((1 a b c) (a 1 b c) (a b 1 c) (a b c 1))
+(insert-everywhere 1 '(a b c d e))
+;; ⇒ ((1 a b c d e)
+;; (a 1 b c d e)
+;; (a b 1 c d e)
+;; (a b c 1 d e)
+;; (a b c d 1 e)
+;; (a b c d e 1))
+(insert-everywhere 'x '(1 2 3 4 5 6 7 8 9 10))
+;; ⇒ ((x 1 2 3 4 5 6 7 8 9 10)
+;; (1 x 2 3 4 5 6 7 8 9 10)
+;; (1 2 x 3 4 5 6 7 8 9 10)
+;; (1 2 3 x 4 5 6 7 8 9 10)
+;; (1 2 3 4 x 5 6 7 8 9 10)
+;; (1 2 3 4 5 x 6 7 8 9 10)
+;; (1 2 3 4 5 6 x 7 8 9 10)
+;; (1 2 3 4 5 6 7 x 8 9 10)
+;; (1 2 3 4 5 6 7 8 x 9 10)
+;; (1 2 3 4 5 6 7 8 9 x 10)
+;; (1 2 3 4 5 6 7 8 9 10 x))
+
+
+;; pack lst -> lst
+
+
+(pack '())
+;; ⇒ ()
+(pack '(a a a a b c c a a d e e e e))
+;; ⇒ ((a a a a) (b) (c c) (a a) (d) (e e e e))
+(pack '(1 2 3 4 5))
+;; ⇒ ((1) (2) (3) (4) (5))
+(pack '(9 9 9 9 9 9 9 9 9))
+;; ⇒ ((9 9 9 9 9 9 9 9 9))
+
+
+;; compress lst -> lst
+
+
+(compress '())
+;; ⇒ ()
+(compress '(a b c d))
+;; ⇒ '(a b c d)
+(compress '(a a a a b c c a a d e e e e))
+;; ⇒ (a b c a d e)
+(compress '(a a a a a a a a a a))
+;; ⇒ (a)
+
+
+;; encode
+
+
+(encode '())
+;; ⇒ ()
+(encode '(a a a a b c c a a d e e e e))
+;; ⇒ ((4 a) (1 b) (2 c) (2 a) (1 d) (4 e))
+(encode '(1 2 3 4 5))
+;; ⇒ ((1 1) (1 2) (1 3) (1 4) (1 5))
+(encode '(9 9 9 9 9 9 9 9 9))
+;; ⇒ ((9 9))
+
+
+;; encode-modified lst -> lst
+
+
+(encode-modified '())
+;; ⇒ ()
+(encode-modified '(a a a a b c c a a d e e e e))
+;; ⇒ ((4 a) b (2 c) (2 a) d (4 e))
+(encode-modified '(1 2 3 4 5))
+;; ⇒ (1 2 3 4 5)
+(encode-modified '(9 9 9 9 9 9 9 9 9))
+;; ⇒ ((9 9))
+
+
+;; decode lst -> lst 
+(define decode
+    (lambda (lst)
+    (cond
+    [(empty? lst) '()])))
+
+(decode '())
+;; ⇒ ()
+(decode '((4 a) b (2 c) (2 a) d (4 e)))
+;; ⇒ (a a a a b c c a a d e e e e)
+(decode '(1 2 3 4 5))
+;; ⇒ (1 2 3 4 5)
+(decode '((9 9)))
+;; ⇒ (9 9 9 9 9 9 9 9 9)
+
+
+;; args-swap f(a b) x y -> f(y x)
+
+
+((args-swap list) 1 2)
+;; ⇒ (2 1)
+((args-swap /) 8 2)
+;; ⇒ 1/4
+((args-swap cons) '(1 2 3) '(4 5 6))
+;; ⇒ ((4 5 6) 1 2 3)
+((args-swap map) '(-1 1 2 5 10) /)
+;; ⇒ (-1 1 1/2 1/5 1/10)
+
+
+;; there-exists-one? f(x) lst -> bool
+
+(there-exists-one? positive? '())
+;; ⇒ #f
+(there-exists-one? positive? '(-1 -10 4 -5 -2 -1))
+;; ⇒ #t
+(there-exists-one? negative? '(-1))
+;; ⇒ #t
+(there-exists-one? symbol? '(4 8 15 16 23 42))
+;; ⇒ #f
+(there-exists-one? symbol? '(4 8 15 sixteen 23 42))
+;; ⇒ #t
+
+
+;; linear-search lst obj eq-fun(a b) -> num
+
+
+(linear-search '() 5 =)
+;; ⇒ #f
+(linear-search '(48 77 30 31 5 20 91 92 69 97 28 32 17 18 96) 5 =)
+;; ⇒ 4
+(linear-search '("red" "blue" "green" "black" "white") "black" string=?)
+;; ⇒ 3
+(linear-search '(a b c d e f g h) 'h equal?)
+;; ⇒ 7
+
+
+;; deriv f(x) num -> num 
+
+
+;; TEST CASES
+
+
+;; newton f(x) num -> num
+
+
+(newton (lambda (x) (- x 10)) 1)
+;; ⇒ 10.000000000023306
+(newton (lambda (x) (+ (* 4 x) 2)) 1)
+;; ⇒ -0.5000000000000551
+(newton (lambda (x) (+ (* x x x) 1)) 50)
+;; ⇒ -0.9999999980685114
+(newton (lambda (x) (+ (cos x) (* 0.5 x))) 5)
+;; ⇒ -1.029866529322135
+
+
+;; integral num num num f(x) -> num
+
+
+(integral 0 1 10 (lambda (x) (* x x x)))
+;; ⇒ 1/4
+(integral 1 2 10
+(lambda (x)
+    (integral 3 4 10
+    (lambda (y)
+        (* x y)))))
+;; ⇒ 21/4
