@@ -255,6 +255,12 @@
 
 ;; there-exists-one? f(x) lst -> bool
 
+(define there-exists-one?
+    (lambda (fn lst)
+    (cond
+    [(empty? lst) #f]
+    [else (or (fn (car lst)) (there-exists-one? fn (cdr lst)))])))
+
 (there-exists-one? positive? '())
 ;; ⇒ #f
 (there-exists-one? positive? '(-1 -10 4 -5 -2 -1))
@@ -269,14 +275,20 @@
 
 ;; linear-search lst obj eq-fun(a b) -> num
 
+(define linear-search
+    (lambda (lst target fn aux)
+    (cond
+    [(empty? lst) #f]
+    [(fn (car lst) target) aux]
+    [else (linear-search (cdr lst) target fn (+ 1 aux))])))
 
-(linear-search '() 5 =)
+(linear-search '() 5 = 0)
 ;; ⇒ #f
-(linear-search '(48 77 30 31 5 20 91 92 69 97 28 32 17 18 96) 5 =)
+(linear-search '(48 77 30 31 5 20 91 92 69 97 28 32 17 18 96) 5 = 0)
 ;; ⇒ 4
-(linear-search '("red" "blue" "green" "black" "white") "black" string=?)
+(linear-search '("red" "blue" "green" "black" "white") "black" string=? 0)
 ;; ⇒ 3
-(linear-search '(a b c d e f g h) 'h equal?)
+(linear-search '(a b c d e f g h) 'h equal? 0)
 ;; ⇒ 7
 
 
