@@ -138,7 +138,7 @@
 
 ;; deep-reverse lst -> lst
 (define deep-reverse
-    (lambda (lst flag)
+    (lambda (lst flag) ;; flag comienza siendo 0
     (cond
     [(empty? lst) '()]
     [(= 0 flag) (deep-reverse (reverse-aux lst) 1)]
@@ -156,12 +156,11 @@
 
 
 ;; insert-everywhere obj lst -> lst
-;; CHECK
 (define insert-everywhere
     (lambda (obj lst aux) ;; aux empieza siendo '()
     (cond
-    [(empty? lst) (cons (append aux (cons obj '())) '())] ;;(cons obj '())]
-    [else (append (cons (append aux (append (cons obj '()) (cdr lst))) '()) (insert-everywhere obj (cdr lst) (append aux (cons (car lst) '()))))])))
+    [(empty? lst) (cons (append aux (cons obj '())) '())]
+    [else (append (cons (append aux (append (cons obj '()) lst)) '()) (insert-everywhere obj (cdr lst) (append aux (cons (car lst) '()))))])))
 
 (insert-everywhere 1 '() '())
 ;; ⇒ ((1))
@@ -176,7 +175,7 @@
 ;; (a b c 1 d e)
 ;; (a b c d 1 e)
 ;; (a b c d e 1))
-(insert-everywhere 'x '(1 2 3 4 5 6 7 8 9 10))
+(insert-everywhere 'x '(1 2 3 4 5 6 7 8 9 10) '())
 ;; ⇒ ((x 1 2 3 4 5 6 7 8 9 10)
 ;; (1 x 2 3 4 5 6 7 8 9 10)
 ;; (1 2 x 3 4 5 6 7 8 9 10)
@@ -191,28 +190,41 @@
 
 
 ;; pack lst -> lst
+(define pack
+    (lambda (lst aux) ;; aux comienza siendo '()
+    (cond
+    [(and (empty? lst) (empty? aux)) '()]
+    [(empty? lst) (cons aux '())]
+    [(empty? aux) (pack (cdr lst) (cons (car lst) '()))]
+    [(eq? (car lst) (car aux)) (pack (cdr lst) (cons (car lst) aux))]
+    [else (append (cons aux '()) (pack (cdr lst) (cons (car lst) '())))])))
 
-
-(pack '())
+(pack '() '())
 ;; ⇒ ()
-(pack '(a a a a b c c a a d e e e e))
+(pack '(a a a a b c c a a d e e e e) '())
 ;; ⇒ ((a a a a) (b) (c c) (a a) (d) (e e e e))
-(pack '(1 2 3 4 5))
+(pack '(1 2 3 4 5) '())
 ;; ⇒ ((1) (2) (3) (4) (5))
-(pack '(9 9 9 9 9 9 9 9 9))
+(pack '(9 9 9 9 9 9 9 9 9) '())
 ;; ⇒ ((9 9 9 9 9 9 9 9 9))
 
 
 ;; compress lst -> lst
+(define compress
+    (lambda (lst aux) ;; aux comienza siendo '() 
+    (cond
+    [(empty? lst) aux] 
+    [(empty? aux) (compress (cdr lst) (cons (car lst) '()))]
+    [(eq? (car lst) (car aux)) (compress (cdr lst) aux)]
+    [else (append aux (compress (cdr lst) (cons (car lst) '())))])))
 
-
-(compress '())
+(compress '() '())
 ;; ⇒ ()
-(compress '(a b c d))
+(compress '(a b c d) '())
 ;; ⇒ '(a b c d)
-(compress '(a a a a b c c a a d e e e e))
+(compress '(a a a a b c c a a d e e e e) '())
 ;; ⇒ (a b c a d e)
-(compress '(a a a a a a a a a a))
+(compress '(a a a a a a a a a a) '())
 ;; ⇒ (a)
 
 
@@ -220,7 +232,8 @@
 (define encode
     (lambda (lst aux) ;; aux comienza siendo '()
     (cond
-    [(empty? lst) aux] ;;(cons aux '())]
+    [(and (empty? lst) (empty? aux)) '()]
+    [(empty? lst) (cons aux '())]
     [(empty? aux) (encode (cdr lst) (cons 1 (cons (car lst) '())))]
     [(eq? (car lst) (cadr aux)) (encode (cdr lst) (cons (+ 1 (car aux)) (cons (car lst) '())))]
     [else (append (cons aux '()) (encode (cdr lst) (cons 1 (cons (car lst) '()))))])))
@@ -236,15 +249,24 @@
 
 
 ;; encode-modified lst -> lst
+(define encode-modified
+    (lambda (lst aux) ;; aux comienza siendo '()
+    (cond
+    [(and (empty? lst) (empty? aux)) '()]
+    [(and (empty? lst) (= (car aux) 1)) (cons (cadr aux) '())]
+    [(empty? lst) (cons aux '())]
+    [(empty? aux) (encode-modified (cdr lst) (cons 1 (cons (car lst) '())))]
+    [(eq? (car lst) (cadr aux)) (encode-modified (cdr lst) (cons (+ (car aux) 1) (cdr aux)))]
+    [(= (car aux) 1) (cons (cadr aux) (encode-modified (cdr lst) (cons 1 (cons (car lst) '()))))]
+    [else (append (cons aux '()) (encode-modified (cdr lst) (cons 1 (cons (car lst) '()))))])))
 
-
-(encode-modified '())
+(encode-modified '() '())
 ;; ⇒ ()
-(encode-modified '(a a a a b c c a a d e e e e))
+(encode-modified '(a a a a b c c a a d e e e e) '())
 ;; ⇒ ((4 a) b (2 c) (2 a) d (4 e))
-(encode-modified '(1 2 3 4 5))
+(encode-modified '(1 2 3 4 5) '())
 ;; ⇒ (1 2 3 4 5)
-(encode-modified '(9 9 9 9 9 9 9 9 9))
+(encode-modified '(9 9 9 9 9 9 9 9 9) '())
 ;; ⇒ ((9 9))
 
 
@@ -252,7 +274,10 @@
 (define decode
     (lambda (lst)
     (cond
-    [(empty? lst) '()])))
+    [(empty? lst) '()]
+    [(not (list? (car lst))) (cons (car lst) (decode (cdr lst)))]
+    [(> (car (car lst)) 1) (cons (cadr (car lst)) (decode (append (cons (cons (- (car (car lst)) 1) (cons (cadr (car lst)) '())) '()) (cdr lst))))]
+    [else (cons (cadr (car lst)) (decode (cdr lst)))])))
 
 (decode '())
 ;; ⇒ ()
@@ -266,10 +291,7 @@
 
 ;; args-swap f(a b) x y -> f(y x)
 (define args-swap
-    (lambda (fun x y)
-    (fun y x)))
-
-;;((lambda(x) (+ x 5)) 5)
+    (lambda (fn)))
 
 ((args-swap list) 1 2)
 ;; ⇒ (2 1)
@@ -282,12 +304,11 @@
 
 
 ;; there-exists-one? f(x) lst -> bool
-
 (define there-exists-one?
     (lambda (fn lst)
     (cond
     [(empty? lst) #f]
-    [else (or (fn (car lst)) (there-exists-one? fn (cdr lst)))])))
+    [else (xor (fn (car lst)) (there-exists-one? fn (cdr lst)))])))
 
 (there-exists-one? positive? '())
 ;; ⇒ #f
@@ -302,7 +323,6 @@
 
 
 ;; linear-search lst obj eq-fun(a b) -> num
-
 (define linear-search
     (lambda (lst target fn aux)
     (cond
