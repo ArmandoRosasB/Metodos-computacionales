@@ -291,7 +291,9 @@
 
 ;; args-swap f(a b) x y -> f(y x)
 (define args-swap
-    (lambda (fn)))
+    (lambda (fn)
+        (lambda (x y)
+        (fn y x))))
 
 ((args-swap list) 1 2)
 ;; ⇒ (2 1)
