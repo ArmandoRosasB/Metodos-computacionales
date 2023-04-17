@@ -150,9 +150,28 @@ circuit(W, X, Y, Z, F) :-
     or(O4, O6, F).
 
 
-fact(1, 1).
+fact(1, 1).       %Caso base
 fact(N, X) :-
     X > 1,
     X1 is X - 1, %Predecesor de X
     fact(N1, X1),
     N is X * N1.
+
+fact(N, 3)
+    3 > 1 TRUE
+    X1 3 - 1 ---> X1 2
+    fact(N1, 2)
+    ----> espera N1 2
+    3*2 6
+
+fact(N, 2)
+    2 > 1 TRUE
+    X1 2 - 1 ---> X1 1
+    fact(N1, 1)
+    ---> espera N1 1
+    N is X * N1. ---> N 2*1 2
+
+fact(N, 1)
+    X > 1 FALSE
+
+    Caso base (1, 1) ---> N 1
