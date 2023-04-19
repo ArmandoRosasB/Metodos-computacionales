@@ -39,6 +39,8 @@ enlisto([HEAD1 | TAIL1], [[HEAD1] | TAIL]):-
 % enlisto(X, Y).
 
 
+
+
 % (duplicateo lst result)
 % Función lógica que tiene éxito si cada elemento en lst aparece duplicado en result
 
@@ -54,6 +56,7 @@ duplicateo([HEAD1 | TAIL1], [HEAD1 | [HEAD1 | TAIL]]):-
 
 
 
+% ---------------------- CHECAR ----------------------
 % (removeo x lst result)
 % Función lógica que tiene éxito si se puede eliminar la primera ocurrencia de x en lst obteniendo result
 
@@ -75,6 +78,48 @@ removeo(X, [HEAD | TAIL], [HEAD | TAIL1]):-
 % (reverseo lst result)
 % Función lógica que tiene éxito si result es la reversa de lst
 
-reverseo([HEAD | []], HEAD).
-reverseo([HEAD | TAIL], [TAIL1 | HEAD]):-
-    reverseo(TAIL, TAIL1).
+reverseo([], []).
+reverseo([HEAD | []], [HEAD]).
+reverseo([HEAD | TAIL], LIST):-
+    reverseo(TAIL, TAIL1),
+    append(TAIL1, [HEAD], LIST).
+
+% reverseo([a, b, c, d], X).
+% reverseo(X, [a, b, c, d]).
+% reverseo([a, b, c, d], [e, d, c, b, a]).
+
+
+
+
+% (palindromeo lst)
+% Función lógica que tiene éxito si lst es un palíndromo (se lee igual de izquierda a derecha que de derecha a izquierda)
+
+palindromeo(X):-
+    reverseo(X, R1),
+    X == R1,
+    write("yes").
+    
+% palindromeo([a, b, c, d, c, b, a]).
+% palindromeo([a, b, c, d, e, f, g]).
+% palindromeo([]).
+
+
+
+
+% (rotateo lst result)
+% Función lógica que tiene éxito cuando result es el resultado de girar lst hacia la izquierda una posición. 
+% En otras palabras, el primer elemento de lst se convierte en el último elemento de result.
+
+rotateo([HEAD | TAIL], X):-
+    append([TAIL], [HEAD], X).
+
+% rotateo([a, b, c, d, e], X).
+% rotateo(X, [a, b, c, d, e]).
+% rotateo([a, b, c, d, e], [a, b, c, d, e]).
+
+
+
+
+% (evensizeo lst) y (oddsizeo lst): Estas dos funciones l´ogicas deben definirse de manera mutuamente
+recursiva. Es decir, cada una debe definirse en t´erminos de la otra. Estas funciones tienen ´exito si el n´umero
+de elementos en lst es par o impar, respectivamente.
