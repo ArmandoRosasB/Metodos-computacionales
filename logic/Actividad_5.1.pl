@@ -120,6 +120,22 @@ rotateo([HEAD | TAIL], X):-
 
 
 
-% (evensizeo lst) y (oddsizeo lst): Estas dos funciones l´ogicas deben definirse de manera mutuamente
-recursiva. Es decir, cada una debe definirse en t´erminos de la otra. Estas funciones tienen ´exito si el n´umero
-de elementos en lst es par o impar, respectivamente.
+% (evensizeo lst) y (oddsizeo lst)
+% Estas dos funciones lógicas deben definirse de manera mutuamente recursiva.
+% Es decir, cada una debe definirse en términos de la otra. 
+% Estas funciones tienen éxito si el número de elementos en lst es par o impar, respectivamente.
+
+oddsizeo([HEAD | []]):- write("yes").
+oddsizeo([HEAD | TAIL]):-
+    evensizeo(TAIL).
+
+evensizeo([]):- write("yes").
+evensizeo([HEAD | TAIL]):-
+    oddsizeo(TAIL).
+
+% evensizeo([a,b,c,d]).
+% oddsizeo([a,b,c]).
+% oddsizeo([a,b,c,d]).
+% evensizeo(X).
+
+
