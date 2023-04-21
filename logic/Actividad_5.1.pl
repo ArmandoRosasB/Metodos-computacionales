@@ -56,12 +56,11 @@ duplicateo([HEAD1 | TAIL1], [HEAD1 | [HEAD1 | TAIL]]):-
 
 
 
-% ---------------------- CHECAR ----------------------
 % (removeo x lst result)
 % Función lógica que tiene éxito si se puede eliminar la primera ocurrencia de x en lst obteniendo result
 
 removeo(X, false, _).
-removeo(HEAD, [HEAD | TAIL], TAIL):- !.
+removeo(HEAD, [HEAD | TAIL], TAIL).
 removeo(X, [HEAD | TAIL], [HEAD | TAIL1]):-
     removeo(X, TAIL, TAIL1).
 
