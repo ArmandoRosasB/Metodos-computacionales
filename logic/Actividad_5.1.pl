@@ -5,9 +5,9 @@ lasto([HEAD | []], HEAD).
 lasto([_ | Tail], X) :-
     lasto(Tail, X).
 
-% lasto(Y, 5).
-% lasto([], X).
-% lasto([1, 2, 3, 4], X).
+% lasto(Y,5).
+% lasto([],X).
+% lasto([1,2,3,4],X).
 
 
 
@@ -19,9 +19,9 @@ butlasto([HEAD | []], []).
 butlasto([HEAD1 | TAIL1], [HEAD1 | TAIL]):-
     butlasto(TAIL1, TAIL).
 
-% butlasto([1, 2, 3, 4], X).
-% butlasto(X, [1, 2, 3, 4]).
-% butlasto(X, Y).
+% butlasto([1,2,3,4],X).
+% butlasto(X,[1,2,3,4]).
+% butlasto(X,Y).
 
 
 
@@ -33,10 +33,10 @@ enlisto([], []).
 enlisto([HEAD1 | TAIL1], [[HEAD1] | TAIL]):-
     enlisto(TAIL1, TAIL).
 
-% enlisto([a, b, c, d, e], X).
-% enlisto(X, [a, b, c, d, e]).
-% enlisto(X, [[a], [b], [c], [d], [e]]).
-% enlisto(X, Y).
+% enlisto([a,b,c,d,e],X).
+% enlisto(X, [a,b,c,d,e]).
+% enlisto(X,[[a],[b],[c],[d],[e]]).
+% enlisto(X,Y).
 
 
 
@@ -48,10 +48,10 @@ duplicateo([], []).
 duplicateo([HEAD1 | TAIL1], [HEAD1 | [HEAD1 | TAIL]]):-
     duplicateo(TAIL1, TAIL).
 
-% duplicateo([1, 2, 3, 4], X).
-% duplicateo(X, [a, a, b, b, c, c]).
-% duplicateo(X, [a, a, b, b, c, c, d]).
-% duplicateo(X, Y).
+% duplicateo([1,2,3,4],X).
+% duplicateo(X,[a,a,b,b,c,c]).
+% duplicateo(X,[a,a,b,b,c,c,d]).
+% duplicateo(X,Y).
 
 
 
@@ -61,18 +61,15 @@ duplicateo([HEAD1 | TAIL1], [HEAD1 | [HEAD1 | TAIL]]):-
 % Función lógica que tiene éxito si se puede eliminar la primera ocurrencia de x en lst obteniendo result
 
 removeo(X, false, _).
-
 removeo(HEAD, [HEAD | TAIL], TAIL):- !.
-
 removeo(X, [HEAD | TAIL], [HEAD | TAIL1]):-
     removeo(X, TAIL, TAIL1).
 
-
-% removeo(3, [1, 2, 3, 4], X).
-% removeo(5, [1, 2, 3, 4], X).
-% removeo(X, [1, 2, 3, 4], [1, 2, 4]).
-% removeo(0, X, [1, 2, 3, 4]).
-% removeo(X, [1, 2, 3, 4], Y).
+% removeo(3,[1,2,3,4],X).
+% removeo(5,[1,2,3,4],X).
+% removeo(X,[1,2,3,4],[1,2,4]).
+% removeo(0,X,[1,2,3, 4]).
+% removeo(X,[1,2,3,4],Y).
 
 
 % (reverseo lst result)
@@ -84,9 +81,9 @@ reverseo([HEAD | TAIL], LIST):-
     reverseo(TAIL, TAIL1),
     append(TAIL1, [HEAD], LIST).
 
-% reverseo([a, b, c, d], X).
-% reverseo(X, [a, b, c, d]).
-% reverseo([a, b, c, d], [e, d, c, b, a]).
+% reverseo([a,b,c,d],X).
+% reverseo(X,[a,b,c,d]).
+% reverseo([a,b,c,d],[e,d,c,b,a]).
 
 
 
@@ -99,8 +96,8 @@ palindromeo(X):-
     X == R1,
     write("yes").
     
-% palindromeo([a, b, c, d, c, b, a]).
-% palindromeo([a, b, c, d, e, f, g]).
+% palindromeo([a,b,c,d,c,b,a]).
+% palindromeo([a,b,c,d,e,f,g]).
 % palindromeo([]).
 
 
@@ -113,9 +110,9 @@ palindromeo(X):-
 rotateo([HEAD | TAIL], X):-
     append([TAIL], [HEAD], X).
 
-% rotateo([a, b, c, d, e], X).
-% rotateo(X, [a, b, c, d, e]).
-% rotateo([a, b, c, d, e], [a, b, c, d, e]).
+% rotateo([a,b,c,d,e],X).
+% rotateo(X,[a,b,c,d,e]).
+% rotateo([a,b,c,d,e],[a,b,c,d,e]).
 
 
 
@@ -139,3 +136,19 @@ evensizeo([HEAD | TAIL]):-
 % evensizeo(X).
 
 
+
+
+% (splito lst a b)
+% Función lógica que tiene éxito cuando al dividir lst se obtiene a y b
+% Los elementos primero, tercero, quinto, etc. de lst van en a, mientras que los elementos segundo, cuarto, sexto, etc. van en b.
+
+splito([], [], []).
+splito([HEAD | []], [HEAD], []).
+splito([HEAD | [SECOND | []]], [HEAD], [SECOND]).
+splito([HEAD | [SECOND | TAIL]], [HEAD | L1], [SECOND | L2]):-
+    splito(TAIL, L1, L2).
+
+% splito([a,1,b,2,c,3,d,4,e],X,Y).
+% splito(X,[a,b,c,d,e],[1,2,3,4]).
+% splito([a,b,c],[a,b,c],X).
+% splito([a,b,c],[a,c],X).
