@@ -233,3 +233,14 @@ compresso([HEAD1 | TAIL1], [HEAD2 | TAIL2]) :-
     compressonext([HEAD1 | TAIL1], RESULT),
     compresso(RESULT, TAIL2).
 
+% compresso([],[]).
+% compresso([1,1,1,1,1,1,1],[1]).
+% compresso([1,1,1,1,1,1,1],[2]).
+% compresso([1,1,1,1,2],[1,2]).
+% compresso([1,1,2,2,1,1,2,2,1,1],[1,2,1,2,1]).
+% compresso([1,1,1,1,2,2,2],[1,2,2]).
+% compresso([1,1,1,1,2,2,2],[1,2]).
+% compresso([1,1,1,1,2,2,2],[1,2,3]).
+% compresso([1,1,1,1,2,2,2],[]).
+% compresso([1,2,3,4],[1,2,3,4]).
+% compresso([1,2,3,4],[3,2,1,4]).
