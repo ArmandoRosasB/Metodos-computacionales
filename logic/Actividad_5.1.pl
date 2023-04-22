@@ -152,6 +152,9 @@ splito([HEAD | [SECOND | TAIL]], [HEAD | L1], [SECOND | L2]):-
 % splito([a,b,c],[a,b,c],X).
 % splito([a,b,c],[a,c],X).
 
+
+
+
 % (swappero a b lst result)
 % Función lógica que tiene éxito solo si result contiene los mismos elementos que lst excepto que cada ocurrencia de a se intercambia por b, y viceversa
 swappero(X, Y, [], []).
@@ -181,11 +184,25 @@ swappero(X, Y, [HEAD1 | TAIL1], [HEAD2 | TAIL2]) :-
 
 
 
+
 % (equalo lst)
 % Función lógica que tiene éxito solo si todos los elementos contenidos en lst se unifican con el
 % mismo valor. La función siempre debe tener éxito si lst está vacía o tiene un solo elemento.
 equalo([]).
 equalo([HEAD | []]).
+equalo([HEAD | [SECOND | TAIL]]) :-
+    HEAD == SECOND,
+    equalo([SECOND | TAIL]).
+    
+% equalo([]).
+% equalo([1]).
+% equalo([1,1,1,1,1,1,1,1]).
+% equalo([1,1,1,1,1,2,1,1]).
+% equalo([1,2,2,2,2,2,2,2]).
+% equalo([2,2,2,2,2,2,2,2]).
+% equalo([2,2,2,2,2,2,2,3]).
+
+
 
 % (subseto a b)
 % Función lógica que tiene éxito si todos los elementos de la lista a son miembros a su vez
@@ -212,6 +229,9 @@ subseto([HEAD | TAIL], X) :-
 % subseto([1,2],[1,2]).
 % subseto([1,2],[1,2,3,4]).
 % subseto([1,5],[1,2,3,4]).
+
+
+
 
 % (compresso lst result)
 % Función lógica que tiene éxito si result tiene los mismos elementos que lst
