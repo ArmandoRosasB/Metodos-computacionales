@@ -212,3 +212,24 @@ subseto([HEAD | TAIL], X) :-
 % subseto([1,2],[1,2]).
 % subseto([1,2],[1,2,3,4]).
 % subseto([1,5],[1,2,3,4]).
+
+% (compresso lst result)
+% Función lógica que tiene éxito si result tiene los mismos elementos que lst
+% excepto que si algunos de estos están repetidos de manera consecutivos se reemplazan por una sola instancia.
+% El orden de los elementos no debe modificarse.
+compressonext([], []).
+compressonext([HEAD | TAIL], []) :-
+    TAIL == [].
+compressonext([HEAD | [SECOND | TAIL]], [SECOND | TAIL]) :-
+    SECOND \== HEAD.
+compressonext([HEAD | [SECOND | TAIL]], RESULT) :-
+    SECOND == HEAD,
+    compressonext([SECOND | TAIL], RESULT).
+compresso([], []).
+compresso([HEAD | []], [HEAD | []]).
+compresso([HEAD1 | TAIL1], [HEAD2 | TAIL2]) :-
+    TAIL1 \== [],
+    HEAD1 == HEAD2,
+    compressonext([HEAD1 | TAIL1], RESULT),
+    compresso(RESULT, TAIL2).
+
