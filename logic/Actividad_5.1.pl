@@ -178,3 +178,37 @@ swappero(X, Y, [HEAD1 | TAIL1], [HEAD2 | TAIL2]) :-
 % swappero(1,2,[3],[4]).
 % swappero(1,2,[1,2,3,4,5],[6,7,8,8,9]).
 % swappero(1,2,[1,2,3,4,5],[2,1,3,4,5]).
+
+
+
+% (equalo lst)
+% Función lógica que tiene éxito solo si todos los elementos contenidos en lst se unifican con el
+% mismo valor. La función siempre debe tener éxito si lst está vacía o tiene un solo elemento.
+equalo([]).
+equalo([HEAD | []]).
+
+% (subseto a b)
+% Función lógica que tiene éxito si todos los elementos de la lista a son miembros a su vez
+% también de la lista b.
+subseto([], []).
+subseto([HEAD1 | []], [HEAD2 | []]) :-
+    HEAD1 == HEAD2.
+subseto([HEAD1 | []], [HEAD2 | TAIL]) :-
+    TAIL \== [],
+    HEAD1 == HEAD2.
+subseto([HEAD1 | []], [HEAD2 | TAIL]) :-
+    TAIL \== [],
+    HEAD1 \== HEAD2,
+    subseto([HEAD1], TAIL).
+subseto([HEAD | TAIL], X) :-
+    TAIL \== [],
+    subseto([HEAD], X),
+    subseto(TAIL, X).
+
+% subseto([],[]).
+% subseto([1,2],[]).
+% subseto([1,2],[3,4]).
+% subseto([1,2],[1,4]).
+% subseto([1,2],[1,2]).
+% subseto([1,2],[1,2,3,4]).
+% subseto([1,5],[1,2,3,4]).
