@@ -1,3 +1,9 @@
+% Authors
+% Ramona Najera Fuentes
+% Rodrigo Teran Hernandez
+% Jose Armando Rosas Balderas
+
+
 % (lasto lst x)
 % Función lógica que tiene éxito si x es el último elemento de lst
 
@@ -183,6 +189,25 @@ swappero(X, Y, [HEAD1 | TAIL1], [HEAD2 | TAIL2]) :-
 % swappero(1,2,[1,2,3,4,5],[2,1,3,4,5]).
 
 
+% swappero
+swappero(_,_,[],[]).
+swappero(X,Y,[HEAD | TAIL], [Y | R]):-
+    HEAD == X,
+    swappero(X, Y, TAIL, R).
+
+swappero(X,Y,[HEAD | TAIL], [X | R]):-
+    HEAD == Y,
+    swappero(X, Y, TAIL, R).
+
+
+swappero(X,Y,[HEAD | TAIL], [HEAD | R]):-
+    HEAD \== X,
+    HEAD \==Y,
+    swappero(X, Y, TAIL, R).
+
+%swappero(a,b,[a,b,a,b,b,b,a],X).
+%swappero(a,b,X,[]).
+%swappero(purr,kitty,[soft,kitty,warm,kitty,little,ball,of,fur,happy,kitty,sleepy,kitty,purr,purr,purr],X).
 
 
 % (equalo lst)
