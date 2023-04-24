@@ -162,34 +162,6 @@ splito([HEAD | [SECOND | TAIL]], [HEAD | L1], [SECOND | L2]):-
 
 
 % (swappero a b lst result)
-% Función lógica que tiene éxito solo si result contiene los mismos elementos que lst excepto que cada ocurrencia de a se intercambia por b, y viceversa
-swappero(X, Y, [], []).
-swappero(X, Y, [HEAD1 | []], [HEAD2 | []]) :-
-    HEAD1 == X,
-    HEAD2 == Y.
-swappero(X, Y, [HEAD1 | []], [HEAD2 | []]) :-
-    HEAD1 == Y,
-    HEAD2 == X.
-swappero(X, Y, [HEAD1 | []], [HEAD2 | []]) :-
-    HEAD1 \== Y,
-    HEAD1 \== X,
-    HEAD1 == HEAD2.
-swappero(X, Y, [HEAD1 | TAIL1], [HEAD2 | TAIL2]) :-
-    TAIL1 \== [],
-    TAIL2 \== [],
-    swappero(X, Y, [HEAD1], [HEAD2]),
-    swappero(X, Y, TAIL1, TAIL2).
-
-% swappero(1,2,[],[]).
-% swappero(1,2,[2],[1]).
-% swappero(1,2,[3],[3]).
-% swappero(1,2,[1],[2]).
-% swappero(1,2,[3],[4]).
-% swappero(1,2,[1,2,3,4,5],[6,7,8,8,9]).
-% swappero(1,2,[1,2,3,4,5],[2,1,3,4,5]).
-
-
-% swappero
 swappero(_,_,[],[]).
 swappero(X,Y,[HEAD | TAIL], [Y | R]):-
     HEAD == X,
