@@ -232,20 +232,10 @@ equalo([HEAD | [SECOND | TAIL]]) :-
 % (subseto a b)
 % Función lógica que tiene éxito si todos los elementos de la lista a son miembros a su vez
 % también de la lista b.
-subseto([], []).
-subseto([HEAD1 | []], [HEAD2 | []]) :-
-    HEAD1 == HEAD2.
-subseto([HEAD1 | []], [HEAD2 | TAIL]) :-
-    TAIL \== [],
-    HEAD1 == HEAD2.
-subseto([HEAD1 | []], [HEAD2 | TAIL]) :-
-    TAIL \== [],
-    HEAD1 \== HEAD2,
-    subseto([HEAD1], TAIL).
-subseto([HEAD | TAIL], X) :-
-    TAIL \== [],
-    subseto([HEAD], X),
-    subseto(TAIL, X).
+subseto([], _).
+subseto([HEAD | TAIL], RESULT) :-
+    member(HEAD, RESULT),
+    subseto(TAIL, RESULT).
 
 % subseto([],[]).
 % subseto([1,2],[]).
@@ -262,22 +252,13 @@ subseto([HEAD | TAIL], X) :-
 % Función lógica que tiene éxito si result tiene los mismos elementos que lst
 % excepto que si algunos de estos están repetidos de manera consecutivos se reemplazan por una sola instancia.
 % El orden de los elementos no debe modificarse.
-compressonext([], []).
-compressonext([HEAD | TAIL], []) :-
-    TAIL == [].
-compressonext([HEAD | [SECOND | TAIL]], [SECOND | TAIL]) :-
-    SECOND \== HEAD.
-compressonext([HEAD | [SECOND | TAIL]], RESULT) :-
-    SECOND == HEAD,
-    compressonext([SECOND | TAIL], RESULT).
 compresso([], []).
-compresso([HEAD | []], [HEAD | []]).
-compresso([HEAD1 | TAIL1], [HEAD2 | TAIL2]) :-
-    TAIL1 \== [],
-    HEAD1 == HEAD2,
-    compressonext([HEAD1 | TAIL1], RESULT),
-    compresso(RESULT, TAIL2).
-
+compresso([HEAD], [HEAD]).
+compresso([HEAD, HEAD | TAIL], RESULT) :-
+    compresso([HEAD | TAIL], RESULT).
+compresso([HEAD1, HEAD2 | TAIL2], [HEAD1 | RESULT]) :-
+    dif(HEAD1, HEAD2),
+    compresso([HEAD2 | TAIL2], RESULT).
 % compresso([],[]).
 % compresso([1,1,1,1,1,1,1],[1]).
 % compresso([1,1,1,1,1,1,1],[2]).
