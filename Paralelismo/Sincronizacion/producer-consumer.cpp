@@ -23,27 +23,50 @@ const int MAXNUM = 10000;
 const int MAXPROD = 5;
 const int MAXCON = 5;
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t space_available = PTHREAD_COND_INITIALIZER;
-pthread_cond_t data_available = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; //mutex
+pthread_cond_t space_available = PTHREAD_COND_INITIALIZER; //semaforo productor 
+pthread_cond_t data_available = PTHREAD_COND_INITIALIZER; //semaforo consumidor
 
-int b[SIZE];
+int b[SIZE]; // arreglo ciclico
 int size = 0;
 int front = 0, rear = 0;
 
-void add_buffer(int i) {
+void add_buffer(int i) { // Productor
+	// Esta funcion agrega un item al final del buffer
 	b[rear] = i;
 	rear = (rear + 1) % SIZE;
 	size++;
 }
 
-int get_buffer(){
+int get_buffer(){ // Consumidor
+	// Esta funcion retira un item del principio del buffer
 	int v;
 	v = b[front];
 	front= (front + 1) % SIZE;
 	size--;
 	return v ;
 }
+
+void* producer(void *);
+void* consumer(void *);
+
+int main(int argc, char* argv[])   {
+	pthread_t producer_thread[MAXPROD];
+	pthread_t consumer_thread[MAXCON];
+
+	for (int i = 0; i < MAXPROD; i++) {
+		pthread_create(&producer_thread[i], NULL, producer, NULL);
+	}
+	sleep(10);
+	for (int i = 0; i < MAXCON; i++) {
+		pthread_create(&consumer_thread[i], NULL, consumer, NULL);
+	}
+	for (int i = 0; i < MAXCON; i++) {
+		pthread_join(consumer_thread[i], NULL);
+	}
+	return 0;
+}
+
 
 void* producer(void *arg) {
 	int i;
@@ -82,19 +105,3 @@ void* consumer(void *arg) {
 	pthread_exit(NULL);
 }
 
-int main(int argc, char* argv[])   {
-	pthread_t producer_thread[MAXPROD];
-	pthread_t consumer_thread[MAXCON];
-
-	for (int i = 0; i < MAXPROD; i++) {
-		pthread_create(&producer_thread[i], NULL, producer, NULL);
-	}
-	sleep(10);
-	for (int i = 0; i < MAXCON; i++) {
-		pthread_create(&consumer_thread[i], NULL, consumer, NULL);
-	}
-	for (int i = 0; i < MAXCON; i++) {
-		pthread_join(consumer_thread[i], NULL);
-	}
-	return 0;
-}
