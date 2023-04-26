@@ -1,7 +1,7 @@
 /*
-Authors:
-Ramona Najera Fuentes
-Jose Armando Rosas Balderas
+    Authors:
+        Ramona Najera Fuentes
+        Jose Armando Rosas Balderas
 */
 
 #include <iostream>
@@ -18,7 +18,7 @@ using namespace std;
 
 /*
     Equipo de programadores:
-    Armando, Ramona, Uri, Mafer, Teran, Perdomo, Chava, Peter (Profesor)
+        Armando, Ramona, Uri, Mafer, Teran, Perdomo, Chava, Peter (Profe)
 */
 const int PROGRAMADORES = 8;  
 const string CODERS[] = {"Armando", "Ramona", "Uri", "Mafer","Teran", "Perdomo", "Chava", "Peter"};
@@ -52,7 +52,6 @@ int main(int argc, char* argv[]) {
     }
 
     pthread_mutex_lock(&mutexPizza);
-
     for(int i = 0; i < PIZZERIA; i++){
         pthread_create(&all_night_long_thread[i], NULL, allNigthLong, NULL);
     }
@@ -63,7 +62,6 @@ int main(int argc, char* argv[]) {
     }
 
     sleep(15);
-    
     return 0;
 }
 
@@ -79,29 +77,35 @@ void* leetcoders(void* param) {
     Block* b;
     b = (Block*) param;
     
-    cout << (string)b->name <<" prepared...\n";
+    cout << (string)b->name <<" prepared to code...\n";
     while(1) {
+        // Para un comensal a la vez
         pthread_mutex_lock(&mutex);
+
         if(pizza_slices == 0) {
             cout << (string)b->name <<": The pizza is over...\n";
             pthread_mutex_unlock(&mutexPizza);
             pthread_cond_wait(&pizza_available, &mutex);
         }
-        cout << (string)b->name <<": I will take one splice...\n";
+
+        cout << (string)b->name <<": I will take one slice...\n";
         pizza_slices--; //eatNcode();
         pthread_mutex_unlock(&mutex);
         sleep(1);
     }
+
     pthread_exit(NULL);
 }
 
 void* allNigthLong(void* param){
     cout << "Delivering pizza...\n";
+
     while(1) {
         pthread_mutex_lock(&mutexPizza);
         pizza_slices = SIZE; //preparar();
         cout << "Pizza delivered.\nTime to code...\n\n";
         pthread_cond_signal(&pizza_available);
     }
+
     pthread_exit(NULL);
 }

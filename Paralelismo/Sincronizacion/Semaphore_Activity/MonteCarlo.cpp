@@ -1,3 +1,9 @@
+/*
+    Authors:
+        Ramona Najera Fuentes
+        Jose Armando Rosas Balderas
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <random>
@@ -10,7 +16,7 @@
 
 using namespace std;
 
-const int COORDENATES = 1000000;
+const int COORDENATES = 10000000;
 const int MAX_GENERATORS = 4;
 const int MAX_CLASSIFIERS= 4;
 const int SIZE = 10;
@@ -18,15 +24,15 @@ const int MAX = 1;
 const int MIN = -1;
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t spaceAvailable = PTHREAD_COND_INITIALIZER; // para generar aleatorios
-pthread_cond_t dataAvailable = PTHREAD_COND_INITIALIZER; // para clasificar
+pthread_cond_t spaceAvailable = PTHREAD_COND_INITIALIZER; // Para generar aleatorios
+pthread_cond_t dataAvailable = PTHREAD_COND_INITIALIZER; // Para clasificar
 
-int inside = 0, outside = 0;
-pair<float, float> buffer[SIZE];
+//int count = 0;
+int inside = 0;
 int bufferSize = 0;
 int front = 0, rear = 0;
+pair<float, float> buffer[SIZE];
 
-int count = 0;
 typedef struct {
     int size = 0;
 } Block;
@@ -36,7 +42,7 @@ float createRandom();
 bool isInside(float, float);
 float* monteCarloSecuencial();
 
-// task for threads
+// Task for threads
 void generate();
 void classify();
 void* generator(void*);
@@ -66,21 +72,21 @@ int main(int argc, char* argv[]) {
     for(int i = 0; i < MAX_GENERATORS; i++) {
         pthread_create(&generator_thread[i], NULL, generator, NULL);
     }
-    //sleep(10);
     
     for(int i = 0; i < MAX_CLASSIFIERS; i++) {
         pthread_create(&classifier_thread[i], NULL, classifier, &blocks[i]);
     }
+
     start_timer();
     for(int i = 0; i < MAX_CLASSIFIERS; i++) {
         pthread_join(classifier_thread[i], NULL);
     }
+
     double ms = stop_timer();
     float PI = 4.0*inside/COORDENATES;
-    //sleep(5);
-    cout << "\nTecnica de Monte Carlo con threads\n\tAproximacion de PI: " << PI << "\n\tTiempo: " << ms << " ms\n\n";
-    //cout<< "In " << inside << " Out" << outside << endl;
-    cout << "Generated: " << count << endl;
+    
+    cout << "\nTecnica de Monte Carlo con threads\n\tAproximacion de PI: " << PI << "\n\tTiempo: " << ms << " ms\n";
+    //cout << "Generated: " << count << '\n';
     return 0;
 }
 
@@ -101,7 +107,7 @@ bool isInside(float x, float y) {
 
 float* monteCarloSecuencial() {
     float auxX, auxY, *res;
-    int in = 0, out = 0;
+    int in = 0;
 
     res = new float[2];
 
@@ -112,8 +118,6 @@ float* monteCarloSecuencial() {
         
         if(isInside(auxX, auxY)) {
             in++;
-        } else {
-            out++;
         }
     }
 
@@ -129,52 +133,45 @@ void generate() {
     float y = createRandom();
 
     pair<float, float> c(x, y);
-
     //cout << "(" << c.first << "," << c.second << ")\n";
 
     buffer[rear] = c;
-    //cout << "Generated (" << buffer[rear].first << ", " << buffer[rear].second << ")" << endl;
+    //cout << "Generated (" << buffer[rear].first << ", " << buffer[rear].second << ")" << '\n';
 
     rear = (rear + 1) % SIZE;
     bufferSize++;
-
 }
 
 void classify() {
     // Clasifica una coordenada del buffer
     pair<float, float> aux = buffer[front];
+    
     //cout << "Classifying (" << aux.first << ", " << aux.second << ")\n";
     if (isInside(aux.first, aux.second)){
         //cout<< "Adding inside"<< endl;
         inside++;
-    } else {
-        //cout<< "Adding outide"<< endl;
-        outside++;
-    }
+    } 
     front = (front + 1) % SIZE;
     bufferSize--;
 }
 
 void* generator(void* arg) {
-
     //cout << "Generator Starting...\n";
+    
     while(1) {
-
         // Bloquea la actividad de otros hilos
         pthread_mutex_lock(&mutex);
         
         if(bufferSize == SIZE) { // Si no hay espacios en el buffer
             pthread_cond_wait(&spaceAvailable, &mutex);
         } 
-        // TaskS
+        // Tasks
         generate();
-        count++;
+        //count++;
         // Mandamos signal: Información disponible
         pthread_cond_signal(&dataAvailable);
         // Unlock mutex: Permite la actividad a otros hilos
         pthread_mutex_unlock(&mutex);
-        
-        //sleep(1);
     }
     
     //cout << "Generator finished...\n\n";
