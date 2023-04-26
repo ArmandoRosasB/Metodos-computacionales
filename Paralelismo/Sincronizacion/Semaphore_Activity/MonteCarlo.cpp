@@ -25,7 +25,6 @@ int inside = 0, outside = 0;
 pair<float, float> buffer[SIZE];
 int bufferSize = 0;
 int front = 0, rear = 0;
-int wi = 0;
 typedef struct {
     int size = 0;
 } Block;
@@ -79,7 +78,6 @@ int main(int argc, char* argv[]) {
     sleep(5);
     cout << "\nTecnica de Monte Carlo con threads\n\tAproximacion de PI: " << PI << "\n\tTiempo: " << ms << " ms\n\n";
     cout<< "In " << inside << " Out" << outside<<endl; 
-    cout<< "i" << wi;
     return 0;
 }
 
@@ -163,8 +161,7 @@ void* generator(void* arg) {
         if(bufferSize == SIZE) { // Si no hay espacios en el buffer
             pthread_cond_wait(&spaceAvailable, &mutex);
         } 
-        // Task
-        wi++;
+        // TaskS
         generate();
         // Mandamos signal: Información disponible
         pthread_cond_signal(&dataAvailable);
