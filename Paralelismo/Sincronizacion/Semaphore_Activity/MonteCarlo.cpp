@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const int COORDENATES = 1000;
+const int COORDENATES = 1000000;
 const int MAX_GENERATORS = 4;
 const int MAX_CLASSIFIERS= 4;
 const int SIZE = 10;
@@ -25,6 +25,8 @@ int inside = 0, outside = 0;
 pair<float, float> buffer[SIZE];
 int bufferSize = 0;
 int front = 0, rear = 0;
+
+int count = 0;
 typedef struct {
     int size = 0;
 } Block;
@@ -64,7 +66,7 @@ int main(int argc, char* argv[]) {
     for(int i = 0; i < MAX_GENERATORS; i++) {
         pthread_create(&generator_thread[i], NULL, generator, NULL);
     }
-    sleep(10);
+    //sleep(10);
     
     for(int i = 0; i < MAX_CLASSIFIERS; i++) {
         pthread_create(&classifier_thread[i], NULL, classifier, &blocks[i]);
@@ -74,10 +76,11 @@ int main(int argc, char* argv[]) {
         pthread_join(classifier_thread[i], NULL);
     }
     double ms = stop_timer();
-    float PI = 4.0*inside/(inside + outside);
-    sleep(5);
+    float PI = 4.0*inside/COORDENATES;
+    //sleep(5);
     cout << "\nTecnica de Monte Carlo con threads\n\tAproximacion de PI: " << PI << "\n\tTiempo: " << ms << " ms\n\n";
-    cout<< "In " << inside << " Out" << outside<<endl; 
+    //cout<< "In " << inside << " Out" << outside << endl;
+    cout << "Generated: " << count << endl;
     return 0;
 }
 
@@ -114,7 +117,7 @@ float* monteCarloSecuencial() {
         }
     }
 
-    res[0] = 4.0*in/(in + out);
+    res[0] = 4.0*in/COORDENATES;
     res[1] = stop_timer();
 
     return res;
@@ -126,6 +129,8 @@ void generate() {
     float y = createRandom();
 
     pair<float, float> c(x, y);
+
+    //cout << "(" << c.first << "," << c.second << ")\n";
 
     buffer[rear] = c;
     //cout << "Generated (" << buffer[rear].first << ", " << buffer[rear].second << ")" << endl;
@@ -163,12 +168,13 @@ void* generator(void* arg) {
         } 
         // TaskS
         generate();
+        count++;
         // Mandamos signal: Información disponible
         pthread_cond_signal(&dataAvailable);
         // Unlock mutex: Permite la actividad a otros hilos
         pthread_mutex_unlock(&mutex);
         
-        sleep(1);
+        //sleep(1);
     }
     
     //cout << "Generator finished...\n\n";
@@ -180,6 +186,7 @@ void* classifier(void* arg){
     b = (Block*) arg;
 
     //cout << "Classifier starting...\n";
+    //cout << "Point = " << b->size << "\n";
     for(int i= 0; i < b->size; i++){
         // Bloquea la actividad de otros hilos
         pthread_mutex_lock(&mutex);
@@ -188,7 +195,6 @@ void* classifier(void* arg){
             pthread_cond_wait(&dataAvailable, &mutex);
         }
         // Task
-        //wi++;
         classify();
         // Mandamos signal: Espacio dosponible
         pthread_cond_signal(&spaceAvailable);
