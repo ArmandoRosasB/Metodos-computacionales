@@ -16,13 +16,21 @@ Aproximación de π mediante coordenadas generadas aleatoriamente
         Semáforo que indica si hay coordenadas en el buffer que clasificar
             - wait()   Esperado por los classifiers
             - signal() Liberado por los generators
-
+    
+    mutex
+        - Bloquea la sección crítica (buffer de coordenadas) para que solo un hilo trabaje sobre ella
 
 PIZZA NOCTURNA
-Los coders trabajan mientras comen pizza y duermen mientras esperan más rebanadas
+Los leetcoders trabajan mientras comen pizza y duermen mientras esperan más rebanadas
 El primero en ver que no hay rebanadas llama a la pizzería antes de dormir
 
     pizza_available
         Semáforo que indica si hay rebanadas de pizza disponibles
             - wait()   Esperado por los coders
             - signal() Liberado por las pizzerías
+        
+        mutex
+            - Bloquea la sección crítica (pizza_slices) para que solo un hilo se encuentre sobre la seccion critica
+        
+        pizza_mutex
+            - Se libera cuando faltan pizza_slices y se bloquea después de llenar la variable
