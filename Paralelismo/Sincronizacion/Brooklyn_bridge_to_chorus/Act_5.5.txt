@@ -11,9 +11,12 @@ Sincronización del tránsito en un puente...
 
     n_to_s
         Semáforo que indica que los vehículos cruzan de norte a sur
-
     s_to_n
         Semáforo que indica que los vehículos cruzan de sur a norte
+    
+    - Arrive: Valida que haya espacio para el vehículo y se esté transitando en la dirección deseada
+    - Crossing: Se encarga de cruzar los tres espacios del puente
+    - Exit: Actualiza el número de vehículos en el puente y la dirección del tránsito
 
     mutex
         - Bloquea la sección crítica (bridge_cars y direction_status) para que solo un hilo trabaje sobre ella

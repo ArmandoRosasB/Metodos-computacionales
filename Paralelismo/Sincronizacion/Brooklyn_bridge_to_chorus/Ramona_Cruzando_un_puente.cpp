@@ -62,14 +62,15 @@ void* StoN(void* param){ // 0 -> South to North
     Block* b;
     b = (Block*) param;
     
-    while (1) {
+    while (b->pos != 4) {
         pthread_mutex_lock(&mutex);
 
         // Arrive bridge
         if(b->pos == -1) {
             cout << "Carro " << b->num << ": Esperando a cruzar de sur a norte...\n";
 
-            if(direction_status == 1 || bridge_cars == 3) pthread_cond_wait(&s_to_n, &mutex);
+            if(direction_status == 1) pthread_cond_wait(&s_to_n, &mutex);
+            if(bridge_cars == 3) continue;
             if(direction_status == -1) direction_status = 0;
 
             bridge_cars++;
@@ -107,14 +108,15 @@ void* NtoS(void* param){ // 1 -> North to South
     Block* b;
     b = (Block*) param;
     
-    while (1) {
+    while (b->pos != 4) {
         pthread_mutex_lock(&mutex);
 
         // Arrive bridge
         if(b->pos == -1) {
             cout << "Carro " << b->num << ": Esperando a cruzar de norte a sur...\n";
 
-            if(direction_status == 0 || bridge_cars == 3) pthread_cond_wait(&n_to_s, &mutex);
+            if(direction_status == 0) pthread_cond_wait(&n_to_s, &mutex);
+            if(bridge_cars == 3) continue;
             if(direction_status == -1) direction_status = 1;
 
             bridge_cars++;
