@@ -1,0 +1,19 @@
+Actividad 5.5 Problemas de sincronización
+
+    José Armando Rosas Balderas, A01704132
+    Ramona Najera Fuentes, A01423596
+
+
+CRUZANDO UN PUENTE
+Sincronización del tránsito en un puente... 
+    - Angosto (una dirección a la vez) 
+    - De servicio ligero (máximo tres vehículos sobre él)
+
+    n_to_s
+        Semáforo que indica que los vehículos cruzan de norte a sur
+
+    s_to_n
+        Semáforo que indica que los vehículos cruzan de sur a norte
+
+    mutex
+        - Bloquea la sección crítica (bridge_cars y direction_status) para que solo un hilo trabaje sobre ella
