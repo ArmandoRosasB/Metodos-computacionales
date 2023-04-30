@@ -1,6 +1,5 @@
 /*
     Authors:
-        Jose Armando Rosas Balderas
         Ramona Najera Fuentes
 */
 
