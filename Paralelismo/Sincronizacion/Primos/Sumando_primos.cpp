@@ -47,7 +47,7 @@ int main(int argc, char* argv[]){
 
     for(int i = 0; i < THREADS; i++) {
         blocks[i].begin =(i)*size + 1;
-        blocks[i].size = (i < THREADS - 1)? size: (MAX - (i + 1)*size);
+        blocks[i].size = (i < THREADS - 1)? size: (MAX - i*size);
         blocks[i].result = 0;
     }
 
@@ -82,7 +82,6 @@ bool isPrime(int num) {
 
     return true;
 }
-
 long long int sumaSecuencial() {
     long long int sum = 0;
 
