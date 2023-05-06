@@ -103,5 +103,6 @@ void* sumar(void* param){
         if(isPrime(b->begin)){
             b->result += b->begin;
         }
+        b->begin++;
     }
 }
