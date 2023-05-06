@@ -1,0 +1,10 @@
+PROGRAMACIÓN PARALELA
+    - José Armando Rosas Balderas
+    - Ramona Nájera Fuentes
+
+Resultados obtenidos
+    La ejecución es más rápida en paralelo porque el rango de números se divide en secciones
+    y se trabaja a la par identificando primos y acumulando la suma de cada thread
+
+    A diferencia de secuencial (que analiza uno por uno), una vez que cada thread acabe solo se suman 
+    sus resultados para obtener el resultado, lo cual incrementa su velocidad de respuesta
