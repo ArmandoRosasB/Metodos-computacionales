@@ -38,7 +38,7 @@ int main(int argc, char* argv[]){
 
     cout << "Suma secuencial\n" << sumaSecuencial() << '\n';
     secTime = stop_timer();
-    cout << "Tiempo: " << secTime << '\n';
+    cout << "Tiempo: " << secTime << "\n\n";
 
 
     pthread_t ptid[THREADS];
