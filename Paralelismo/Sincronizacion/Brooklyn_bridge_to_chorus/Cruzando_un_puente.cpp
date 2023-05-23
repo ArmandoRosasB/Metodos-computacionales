@@ -65,13 +65,11 @@ void arrive(Block* b) {
 
     cout << "Carro " << b->num << ": Esperando a entrar al puente (dir " << ((b->dir == 0)? "N-S":"S-N") << ")\n";
 
-    if(!flag || bridge_cars == MAX_CARS) pthread_cond_wait(&space_available, &mutex);
-
     bool semaphore = true;
     if (b->dir == 0 && bridge_dir == 1) semaphore = false;
     if (b->dir == 1 && bridge_dir == 0) semaphore = false;
 
-    if(!semaphore) pthread_cond_wait(&space_available, &mutex);
+    if(bridge_cars >= MAX_CARS || !semaphore) pthread_cond_wait(&space_available, &mutex); //!flag || 
 
     cout << "Carro " << b->num << ": Entrando al puente (dir " << ((b->dir == 0)? "N-S":"S-N") << ")\n";
     bridge_dir = b->dir;
@@ -80,6 +78,9 @@ void arrive(Block* b) {
     bridge_cars++;
     if(bridge_cars == MAX_CARS) flag = false; // Se alcanzó el límite de vehículos 
 }
+
+
+
 
 void cross(Block* b) {
     cout << "Carro " << b->num << ": Cruzando el puente (pos " << b->pos << ")\n";
