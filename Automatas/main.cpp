@@ -71,16 +71,18 @@ int main(int argc, char* argv[]){
                     AFN->addEdge(exclamacion_unificado.first, nodo, '$');
 
                     // Conectamos el último nodo !unificado con el 1er no !unificado (1...* veces)
-                    AFN->addEdge(exclamacion_unificado.second, exclamacion_unificado.second, '$');
+                    AFN->addEdge(exclamacion_unificado.second, exclamacion_unificado.first, '$');
                 } else if (b[i] == '?'){
                     // Conectamos el 1er nodo !unificado con el nuevo (0 veces)
                     AFN->addEdge(exclamacion_unificado.first, nodo, '$');
 
                 } else if (b[i] == '+'){
                     // Conectamos el último nodo !unificado con el 1er no !unificado (1...* veces)
-                    AFN->addEdge(exclamacion_unificado.second, exclamacion_unificado.second, '$');
+                    AFN->addEdge(exclamacion_unificado.second, exclamacion_unificado.first, '$');
 
                 }
+
+                exclamacion_unificado = pair<int, int>(-1, -1);
             }
 
             operandos.push(pair<int, int>(top.first, nodo));
@@ -141,10 +143,12 @@ int main(int argc, char* argv[]){
                 AFN->addEdge(top.second, exclamacion_unificado.second, b[i]);
                 AFN->deleteFrom(exclamacion_unificado.first);
 
-                operandos.push(pair<int, int>(top.second, exclamacion_unificado.second));
+                operandos.push(pair<int, int>(top.first, exclamacion_unificado.second));
+                cout << "(" << operandos.top().first << ", " << operandos.top().second << ")"; 
                 exclamacion_unificado.first = top.second; // exclamacion_unificado.first--;
             } else {
                 operandos.push(pair<int, int>(nodo, nodo + 1));
+                cout << "(" << operandos.top().first << ", " << operandos.top().second << ")"; 
             } 
 
             nodo += 2;           
@@ -180,9 +184,11 @@ int main(int argc, char* argv[]){
         operandos.push(pair<int, int>(origin, destiny));
     }
 
-    operadores.pop();
     exclamacion_unificado = pair<int, int>(-1, -1);
     bloqueado = pair<int, int>(-1, -1);
+    AFN->addEdge(nodo, operandos.top().first, '$');
+    nodo++;
+    AFN->addEdge(operandos.top().second, nodo, '$');
     
     outputFile << AFN->toString();
 
