@@ -4,7 +4,7 @@ Este algoritmo requiere dos pilas
     - Operadores
     - Operandos
 
-Este algoritmo requiere dos variables globales
+Este algoritmo requiere dos variables globales y un contador
     - Último autómata no unificado generado
         (-1, -1): Si el último es unificado
         (x, y): Si no está unificado
@@ -18,12 +18,13 @@ Este algoritmo requiere dos variables globales
 
 1  Por cada carácter C en la entrada:
 
-    1.1 Si C es un carácter:
+    1.1 Si C es un caracter:
         1.1.1 Crear el autómata del símbolo
         1.1.2 Actualizamos valor de último autómata no unificado
-        1.1.3 Si el último operando no está bloqueado:
+        1.1.3 !operandos.empty() && Si el último operando no está bloqueado:
             1.1.3.1 "pop" al último operando
             1.1.3.2 Creamos un nuevo autómata con ambos operandos y lo agregamos a la pila de operandos
+            1.1.3.3 Restamos 1 unidad al .first del ultimo valor no unificado
         1.1.4 Agregamos el automata a la pila de operandos
 
     1.2 Si C es '(':
@@ -42,9 +43,11 @@ Este algoritmo requiere dos variables globales
         1.4.2 Bloquear el último autómata de la pila de operandos
 
     1.5 Si C es ')' o terminamos de procesar la entrada
-        1.5.1 Mientras haya operadores en la pila de operandos:
+        1.5.1 Mientras operadores.top() != '(':
             1.5.1.1 Tomar el último operador de la pila de operadores (siempre debe ser '|') y hacer las modificaciones a los últimos dos operandos
             1.5.1.2 Agregar a la pila de operandos, el nuevo automata modificado y unificado 
-            1.5.1.3 Resetear todas las variables globales
+        1.5.2 Si operadores.top() == '('
+            1.5.2.1 Sacar operador de la pila de operadores
+        1.5.3 Resetear todas las variables globales
 
 2 Retornar "top" de la pila de operandos

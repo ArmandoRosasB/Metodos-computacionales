@@ -18,12 +18,13 @@ class WGraph {
         bool containsVertex(Vertex) const;
         void addEdge(Vertex, Vertex, Edge);
         map<Vertex, Edge> getConnectionsFrom(Vertex) const;
+        void deleteFrom(Vertex);
         string toString() const;
 };
 
 template<class Vertex, class Edge>
 WGraph<Vertex, Edge>::WGraph(bool direction) {
-    this.direction = direction;
+    this->direction = direction;
 }
 
 template<class Vertex, class Edge >
@@ -57,6 +58,12 @@ map<Vertex, Edge> WGraph<Vertex, Edge>::getConnectionsFrom(Vertex v) const{
     }
 
     return edges[v];
+}
+
+template<class Vertex, class Edge>
+void WGraph<Vertex, Edge>::deleteFrom(Vertex v) {
+    vertexes.erase(v);
+    edges.erase(v);
 }
         
 template<class Vertex, class Edge>
