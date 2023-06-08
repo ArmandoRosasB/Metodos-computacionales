@@ -57,7 +57,9 @@ map<Vertex, Edge> WGraph<Vertex, Edge>::getConnectionsFrom(Vertex v) const{
         throw NoSuchElement();
     }
 
-    return edges[v];
+    //return edges[v];
+    map<Vertex, Edge> result(edges.at(v).begin(), edges.at(v).end());
+	return result;
 }
 
 template<class Vertex, class Edge>
@@ -83,4 +85,29 @@ string WGraph<Vertex, Edge>::toString() const{
 	aux << "\n";
 
 	return aux.str();
+}
+
+
+/***********************************************************/
+/**************************** BFS **************************/
+/***********************************************************/
+
+template <class Vertex, class Edge>
+std::set<Vertex> bfs(Vertex start, Edge& cost, WGraph<Vertex, Edge>* graph) {
+	std::set<Vertex> visited;
+	std::queue<Vertex> xVisit;
+	typename std::map<Vertex, Edge>::iterator itr;
+
+	xVisit.push(start);
+	while (!xVisit.empty()) {
+		Vertex v = xVisit.front(); xVisit.pop();
+		if (visited.find(v) == visited.end()) {
+			visited.insert(v);
+			std::map<Vertex, Edge> connected = graph->getConnectionsFrom(v);
+			for (itr = connected.begin(); itr != connected.end(); itr++) {
+                if (itr->second == cost) xVisit.push( itr->first );
+			}
+		}
+	}
+	return visited;
 }
