@@ -100,6 +100,7 @@ std::set<Vertex> bfs(Vertex start, Edge& cost, WGraph<Vertex, Edge>* graph) {
 
 	xVisit.push(start);
 	while (!xVisit.empty()) {
+        cout << "EStoy iterando" << endl;
 		Vertex v = xVisit.front(); xVisit.pop();
 		if (visited.find(v) == visited.end()) {
 			visited.insert(v);

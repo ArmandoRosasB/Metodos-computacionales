@@ -3,6 +3,7 @@
 #include <fstream>
 #include "wgraph.h"
 #include <stdlib.h>
+#include <queue>
 
 using namespace std;
 
@@ -145,12 +146,10 @@ int main(int argc, char* argv[]){
                 AFN->addEdge(top.second, exclamacion_unificado.second, b[i]);
                 AFN->deleteFrom(exclamacion_unificado.first);
 
-                operandos.push(pair<int, int>(top.first, exclamacion_unificado.second));
-                cout << "(" << operandos.top().first << ", " << operandos.top().second << ")"; 
+                operandos.push(pair<int, int>(top.first, exclamacion_unificado.second)); 
                 exclamacion_unificado.first = top.second; // exclamacion_unificado.first--;
             } else {
                 operandos.push(pair<int, int>(nodo, nodo + 1));
-                cout << "(" << operandos.top().first << ", " << operandos.top().second << ")"; 
             } 
 
             nodo += 2;           
@@ -192,31 +191,34 @@ int main(int argc, char* argv[]){
     nodo++;
     AFN->addEdge(operandos.top().second, nodo, epsilon);
     
-    outputFile << AFN->toString();
+    outputFile << "AFN" << endl;
+    outputFile << AFN->toString() << endl << endl;
 
     // ------------------------------- Autómata determinista -------------------------------
     
-    WGraph<int, char>* AFD = new WGraph<int, char>(true);
+    WGraph<char, char>* AFD = new WGraph<char, char>(true);
     char nuevo_nodo = 'A';
     queue<char> xVisit;
     map<char, set<int>> eq;
     set<int>::iterator itrEq;
 
     // 1er e-closure
-    eq.insert(pair<char, set<int>>(nuevo_nodo, bfs(nodo, epsilon, AFN)));
+    eq.insert(pair<char, set<int>>(nuevo_nodo, bfs(nodo-1, epsilon, AFN)));
     xVisit.push(nuevo_nodo);
     nuevo_nodo++;
 
     while (!xVisit.empty()){
         char curr_node = xVisit.front();
         xVisit.pop();
-
+        
         for(int i = 0; i < a.size(); i++) { // Iteramos sobre el alfabeto
             set<int> ans;
-
+            
             for(itrEq = eq[curr_node].begin(); itrEq != eq[curr_node].end(); itrEq++) {
+                cout << *itrEq << " ";
                 set<int> helper = bfs(*itrEq, a[i], AFN);
                 ans.merge(helper);
+                cout << "Rerminé\n";
             }
 
             set<int> cerradura = eClosure(ans, AFN);
@@ -229,12 +231,15 @@ int main(int argc, char* argv[]){
                 AFD->addEdge(curr_node, nuevo_nodo, a[i]);
                 nuevo_nodo++;
             } else {
-
+                AFD->addEdge(curr_node, exists, a[i]);
             }
             
         }
         nuevo_nodo++;
     }
+
+    outputFile << "AFD" << endl;
+    outputFile << AFD->toString();
 
     inputFile.close();
     outputFile.close();
@@ -247,8 +252,10 @@ set<int> eClosure(set<int>& check, WGraph<int, char>*& AFN) {
     set<int> ans;
 
     for(itr = check.begin(); itr != check.end(); itr++) {
+        cout << *itr << " ";
         set<int> helper = bfs(*itr, epsilon, AFN);
         ans.merge(helper);
+        cout << "Terminé\n";
     }
 
     return ans;
