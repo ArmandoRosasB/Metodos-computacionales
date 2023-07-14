@@ -11,13 +11,13 @@ class WGraph {
     private:
         bool direction;
         set<Vertex> vertexes;
-        map<Vertex, map<Vertex, Edge>> edges;
+        map<Vertex, multimap<Vertex, Edge>> edges;
 
     public:
         WGraph(bool);
         bool containsVertex(Vertex) const;
         void addEdge(Vertex, Vertex, Edge);
-        map<Vertex, Edge> getConnectionsFrom(Vertex) const;
+        multimap<Vertex, Edge> getConnectionsFrom(Vertex) const;
         void deleteFrom(Vertex);
         string toString() const;
 };
@@ -37,12 +37,12 @@ template<class Vertex, class Edge>
 void WGraph<Vertex, Edge>::addEdge(Vertex from, Vertex to, Edge cost){
     if(!containsVertex(from)) {
         vertexes.insert(from);
-        edges.insert(pair<Vertex, map<Vertex, Edge>>(from, map<Vertex, Edge>()));
+        edges.insert(pair<Vertex, multimap<Vertex, Edge>>(from, multimap<Vertex, Edge>()));
     }
 
     if(!containsVertex(to)) {
         vertexes.insert(to);
-        edges.insert(pair<Vertex, map<Vertex, Edge>>(to, map<Vertex, Edge>()));
+        edges.insert(pair<Vertex, multimap<Vertex, Edge>>(to, multimap<Vertex, Edge>()));
     }
 
     edges[from].insert(pair<Vertex, Edge>(to, cost));
@@ -52,13 +52,13 @@ void WGraph<Vertex, Edge>::addEdge(Vertex from, Vertex to, Edge cost){
 }
         
 template<class Vertex, class Edge>
-map<Vertex, Edge> WGraph<Vertex, Edge>::getConnectionsFrom(Vertex v) const{
+multimap<Vertex, Edge> WGraph<Vertex, Edge>::getConnectionsFrom(Vertex v) const{
     if(!containsVertex(v)) {
         throw NoSuchElement();
     }
 
     //return edges[v];
-    map<Vertex, Edge> result(edges.at(v).begin(), edges.at(v).end());
+    multimap<Vertex, Edge> result(edges.at(v).begin(), edges.at(v).end());
 	return result;
 }
 
@@ -100,11 +100,10 @@ std::set<Vertex> bfs(Vertex start, Edge& cost, WGraph<Vertex, Edge>* graph) {
 
 	xVisit.push(start);
 	while (!xVisit.empty()) {
-        cout << "EStoy iterando" << endl;
 		Vertex v = xVisit.front(); xVisit.pop();
 		if (visited.find(v) == visited.end()) {
 			visited.insert(v);
-			std::map<Vertex, Edge> connected = graph->getConnectionsFrom(v);
+			std::multimap<Vertex, Edge> connected = graph->getConnectionsFrom(v);
 			for (itr = connected.begin(); itr != connected.end(); itr++) {
                 if (itr->second == cost) xVisit.push( itr->first );
 			}

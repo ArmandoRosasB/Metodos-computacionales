@@ -118,13 +118,14 @@ int main(int argc, char* argv[]){
                 AFN->addEdge(second.second, nodo, epsilon);
                 AFN->addEdge(first.second, nodo, epsilon);
 
-                // Agregamos nodo de aceptación
+                //Agregamos nodo de aceptación
                 destiny = nodo + 1;
                 AFN->addEdge(nodo, destiny, epsilon);
                 nodo += 2;
-
+                
                 // Agregamos a la pila de operandos el nuevo autómata
                 operandos.push(pair<int, int>(origin, destiny));
+                operandos.push(pair<int, int>(origin, nodo-1));
             }
 
             operadores.pop();
@@ -203,41 +204,60 @@ int main(int argc, char* argv[]){
     set<int>::iterator itrEq;
 
     // 1er e-closure
-    eq.insert(pair<char, set<int>>(nuevo_nodo, bfs(nodo-1, epsilon, AFN)));
+    eq.insert(pair<char, set<int>>(nuevo_nodo, bfs(nodo-1, epsilon, AFN)));        
     xVisit.push(nuevo_nodo);
     nuevo_nodo++;
-
+    int t = 3;
     while (!xVisit.empty()){
         char curr_node = xVisit.front();
         xVisit.pop();
         
         for(int i = 0; i < a.size(); i++) { // Iteramos sobre el alfabeto
+            if (a[i] == epsilon) continue;
             set<int> ans;
             
             for(itrEq = eq[curr_node].begin(); itrEq != eq[curr_node].end(); itrEq++) {
-                cout << *itrEq << " ";
                 set<int> helper = bfs(*itrEq, a[i], AFN);
                 ans.merge(helper);
-                cout << "Rerminé\n";
             }
 
-            set<int> cerradura = eClosure(ans, AFN);
-            char exists = search(cerradura, eq);
+            cout << curr_node << " " << a[i] << ": ";
+            itrEq = ans.begin();
+            while (itrEq != ans.end()){
+               cout << *itrEq << " ";
+                itrEq++;
+            }
+            cout << endl;
 
+            set<int> cerradura = eClosure(ans, AFN);
+            cout << "Cerradura: ";
+            itrEq = cerradura.begin();
+            while (itrEq != cerradura.end()){
+                cout << *itrEq << " ";
+                itrEq++;
+            }
+            cout << endl;
+
+
+            char exists = search(cerradura, eq);
+            cout << "curr node = " << curr_node;
+            cout << "exist: " << exists;
+            cout << "a[i] = " << a[i];
             if(exists == '-') {
-                eq.insert(pair<char, set<int>>(nuevo_nodo, ans));
+                eq.insert(pair<char, set<int>>(nuevo_nodo, cerradura));
                 xVisit.push(nuevo_nodo);
 
                 AFD->addEdge(curr_node, nuevo_nodo, a[i]);
+                cout << "No existe, nuevo nodo = " << nuevo_nodo;
                 nuevo_nodo++;
+                
             } else {
                 AFD->addEdge(curr_node, exists, a[i]);
             }
-            
-        }
-        nuevo_nodo++;
-    }
 
+            cout <<endl;
+        }   
+    }
     outputFile << "AFD" << endl;
     outputFile << AFD->toString();
 
@@ -252,21 +272,20 @@ set<int> eClosure(set<int>& check, WGraph<int, char>*& AFN) {
     set<int> ans;
 
     for(itr = check.begin(); itr != check.end(); itr++) {
-        cout << *itr << " ";
         set<int> helper = bfs(*itr, epsilon, AFN);
         ans.merge(helper);
-        cout << "Terminé\n";
     }
 
     return ans;
 }
 
-char search(set<int>& check, map<char, set<int>>& aux) {
+char search(set<int>& check, map<char, set<int>>& aux) { 
     map<char, set<int>>::iterator itr;
-
     itr = aux.begin();
     while(itr != aux.end()) {
         if(itr->second == check) return itr->first;
+        itr++;
+
     }
 
     return '-';

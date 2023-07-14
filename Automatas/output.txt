@@ -15,3 +15,10 @@ AFN
 
 
 
+AFD
+A	(B,a)	(C,b)	
+B	(B,a)	(D,b)	
+C	(C,b)	(E,a)	
+D	(D,a)	(D,b)	
+E	(D,b)	(E,a)	
+
